@@ -1,19 +1,11 @@
-// export interface User{
-//     name: String,
-//     email: String,
-//     password: String,
-//     datOfBirth: Date,
-//     role: String
-// }
-
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-interface LoginState {
+export interface LoginState {
     email: string;
     password: string;
     hasErrors: boolean;
     loginCreds: boolean;
-    isAuthenticated: boolean;
+    isAdmin: boolean;
 }
 
 const initialState: LoginState = {
@@ -21,7 +13,7 @@ const initialState: LoginState = {
     password: '',
     hasErrors: false,
     loginCreds: false,
-    isAuthenticated: false
+    isAdmin: true
 }
 
 export const AuthenticationSlice = createSlice({
@@ -36,24 +28,26 @@ export const AuthenticationSlice = createSlice({
             state[key] = value;
             state.hasErrors = false;
             state.loginCreds = false;
+            state.isAdmin = true;
         },
         hasError: (state: LoginState) => {
             state.hasErrors = true;
         },
-        // hasNoError: (state: LoginState) => {
-        //     state.hasErrors = false;
-        //     state.loginCreds = false;
-        // },
         checkLoginCreds: (state: LoginState) => {
             state.loginCreds = true;
             state.hasErrors = true;
         },
-        userisAuthenticated : (state: LoginState) => {
-            state.isAuthenticated = true
-        }
+        checkRole: (state: LoginState) => {
+            state.hasErrors = true;
+            state.isAdmin = false;
+        },
+        // isAdmin: (state: LoginState) => {
+        //     state.hasErrors = false;
+        //     state.isAdmin = true;
+        // }
     },
 });
 
-export const {onInputChange, hasError, checkLoginCreds, userisAuthenticated} = AuthenticationSlice.actions;
+export const {onInputChange, hasError, checkLoginCreds, checkRole} = AuthenticationSlice.actions;
 
 export const authReducer =  AuthenticationSlice.reducer;
