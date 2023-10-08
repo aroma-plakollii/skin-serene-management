@@ -2,6 +2,8 @@ import axios from "axios";
 import { API } from "../config";
 import { HEADERS } from "../config";
 
+export const isAuthenticated = () => sessionStorage.getItem('token');
+
 export const login = async(data: any) =>{
     try{
         const res = await axios({

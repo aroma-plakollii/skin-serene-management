@@ -1,11 +1,10 @@
 import './index.css';
-import { Login } from './views/Login';
+import './App.css';
+import { RouterList } from './router/RouterList';
 
 function App() {
   return (
-    <div className="App">
-      <Login />
-    </div>
+    <RouterList />
   );
 }
 

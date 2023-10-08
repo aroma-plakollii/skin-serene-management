@@ -1,3 +1,5 @@
+@import url('~@fontsource/quantico/700.css');
+
 .App {
   text-align: center;
 }
@@ -35,4 +37,8 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.side-bar span{
+  font-family: 'Quantico';
 }

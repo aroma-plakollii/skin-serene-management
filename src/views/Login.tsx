@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux"
-import {onInputChange, hasError, checkLoginCreds, userisAuthenticated} from '../store/features/authenticationSlice'
+import {onInputChange, hasError, checkLoginCreds, checkRole} from '../store/features/authenticationSlice'
 import { login } from "../services/AuthenticationService";
 
 export const Login = () => {
@@ -9,6 +9,7 @@ export const Login = () => {
     const password = useSelector((state: any) => state.auth.password);
     const hasErrors = useSelector((state: any) => state.auth.hasErrors);
     const loginCreds = useSelector((state: any) => state.auth.loginCreds);
+    const isAdmin = useSelector((state: any) => state.auth.isAdmin)
 
     const onLogin = async (e: any) => {
         e.preventDefault();
@@ -31,11 +32,17 @@ export const Login = () => {
                 return;
             }
 
+            if(res.userRole !== 'admin'){
+                dispatch(checkRole());
+                return;
+            }  
+            
             if(res.token){
                 sessionStorage.setItem('token', res.token);
-                dispatch(userisAuthenticated());
+                sessionStorage.setItem('user', res.user.name);
+                
                 res.token && window.location.reload();
-            }    
+            } 
         }
     }
 
@@ -102,12 +109,13 @@ export const Login = () => {
                             />
                         </div>
                         {loginCreds && <p className="text-sm pt-2 text-rose-500 font-medium">Check login credentials</p>}
+                        {!isAdmin && <p className="text-sm pt-2 text-rose-500 font-medium">Admin access required</p>}
                         </div>
 
                         <div>
                         <button
                             type="submit"
-                            className="flex w-full justify-center rounded-md bg-black px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-purple-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                            className="flex w-full justify-center rounded-md bg-black px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-gray-700 hover:bg-gradient-to-r from-fuchsia-400/60 via-indigo-300/60 to-fuchsia-400/60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                             onClick={onLogin}
                         >
                             Sign in
