@@ -19,11 +19,11 @@ export const login = async(data: any) =>{
     }
 }
 
-export const register = async(data: any) => {
+export const register = async (data: any) => {
     try{
         const res = await axios({
             method: 'post',
-            url: `${API}/login`,
+            url: `${API}/user/register`,
             data: data,
             headers: HEADERS
         });

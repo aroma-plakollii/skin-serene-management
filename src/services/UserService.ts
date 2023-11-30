@@ -15,3 +15,21 @@ export const getUsers = async () => {
         return e;
     }
 }
+
+export const deleteUser = async (id: any) => {
+    
+    try{
+        const res = axios({
+            method: 'delete',
+            url: `${API}/user/${id}`,
+            headers: HEADERS
+        });
+
+        console.log(res);
+        return res;
+    }catch(e){
+        console.log(e);
+        
+        return e;
+    }
+}

@@ -42,3 +42,110 @@
 .side-bar span{
   font-family: 'Quantico';
 }
+
+.item {
+  align-items: center;
+  color: #FFF;
+  cursor: pointer;
+  display: flex;
+  font-size: 1rem;
+  height: 2rem;
+  justify-content: center;
+  width: 2rem;
+  margin: 0.3rem;
+}
+
+.disabled-page {
+  color: #808e9b;
+}
+
+.active-page {
+  border-radius: 2rem;
+  background-color: rgb(76 29 149);
+}
+
+.break-me {
+}
+
+.next {
+  color: rgb(167 139 250);
+  font-size: 2rem;
+  height: 1.8rem;
+  position: absolute;
+  right: 0;
+  width: 2rem;
+}
+
+.pagination {
+  margin: 0.9rem auto 0 auto;
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  height: 1.8rem;
+  justify-content: center;
+  list-style-type: none;
+  position: relative;
+  width: 55rem;
+}
+
+.pagination-page {
+  font-weight: 700;
+}
+
+.previous {
+  color: rgb(167 139 250);
+  font-size: 2rem;
+  height: 1.8rem;
+  left: 0;
+  position: absolute;
+  width: 2rem;
+}
+
+.react-datepicker-wrapper{
+  width: 100%;
+}
+
+.date-picker{
+  width: 100%;
+}
+
+.react-datepicker__triangle{
+  left: -9px !important;
+  background-color: white !important;
+}
+
+.react-datepicker__header{
+  background-color: white !important;
+}
+
+.react-datepicker__day--selected{
+  background-color: rgb(76 29 149) !important;
+}
+
+.react-datepicker__day--keyboard-selected{
+  background-color: rgb(76 29 149) !important;
+}
+
+.react-datepicker__day:hover{
+  background-color: white !important;
+  color: rgb(76 29 149) !important;
+}
+
+.react-datepicker__day{
+  color: white !important;
+}
+
+.react-datepicker__month{
+  background-color: rgb(167 139 250) !important;
+  padding: 0.4rem !important;
+  margin: 0 !important;
+}
+
+.react-datepicker-popper[data-placement^=top]  .react-datepicker__triangle::before{
+  border-top-color: white !important;
+}
+
+.react-datepicker-popper[data-placement^=top]  .react-datepicker__triangle::after{
+  border-top-color: white !important;
+}
+
