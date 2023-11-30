@@ -1,49 +1,86 @@
 import { useSelector, useDispatch } from "react-redux";
-import { getUsers } from "../../services/UserService";
-import { UserInterface, userList } from "../../store/features/userSlice";
 import { useEffect } from "react";
+import moment from "moment";
+import { Link } from "react-router-dom";
+import {MdDelete} from 'react-icons/md'
+import {AiFillEdit} from 'react-icons/ai'
+import { getUsers, deleteUser } from "../../services/UserService";
+import { userList, deletedUser } from "../../store/features/userSlice";
+import { setTotalPages, setCurrentPage, setCurrentPageLower } from "../../store/features/pagignationSlice";
+import { Pagignation } from "../shared/Pagignation";
 
 export const UserList = () => {
 
     const dispatch = useDispatch();
     const usersList = useSelector((state: any) => state.user.users);
+    const isDeleted = useSelector((state: any) => state.user.isDeleted)
+    const currentPage = useSelector((state: any) => state.pagignation.currentPage);
+    const itemsPerPage = useSelector((state: any) => state.pagignation.itemsPerPage);
+    const totalPages = useSelector((state: any) => state.pagignation.totalPages)
 
     useEffect(() => {
         const __init = async () => {
             const fetchUsers = await getUsers();
             dispatch(userList(fetchUsers));
-            console.log(fetchUsers,usersList);    
+            dispatch(setTotalPages(Math.ceil(fetchUsers.length / itemsPerPage)));               
+            
+            if (totalPages > 0 && currentPage + 1 > totalPages) {
+                dispatch(setCurrentPageLower());
+            }
         }
 
         __init();
-    }, [dispatch]);
+    }, [dispatch, isDeleted, totalPages, currentPage ]);
+
+    const startIndex = currentPage * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage; 
+    const userArray = usersList.slice(startIndex,endIndex)
+    
+    const pageChangeHandler = (selectedPage: any) => {        
+        dispatch(setCurrentPage(selectedPage.selected))
+    }
+
+    const onDelete = async (id: any) => {    
+        const isDeleted = await deleteUser(id);
+
+        if(isDeleted){
+            dispatch(deletedUser());
+        }
+
+    }
 
     const renderUsers = () => {
+        
         return(
-            usersList.users.map((user: any, index: number) => {
+            userArray.map((user: any, index: number) => {                
                 return(
-                    <tr className="dark:bg-black">
-                        <td className="p-3">
-                            <p>{index}</p>
-                        </td>
-                        <td className="p-3">
-                            <p>{user.name}</p>
-                        </td>
-                        <td className="p-3">
-                            <p>{user.email}</p>
-                        </td>
-                        <td className="p-3">
-                            <p>{user.dateOfBirth.toLocaleString()}</p>
-                        </td>
-                        <td className="p-3">
-                            <p>{user.role}</p>
-                        </td>
-                        <td className="p-3 text-right">
-                            <span className="px-3 py-1 font-semibold rounded-md dark:bg-violet-400 dark:text-gray-900">
-                                <span>Pending</span>
-                            </span>
-                        </td>
-                    </tr>
+                    <>
+                        <tr className="bg-neutral-900">
+                            <td className="px-3 py-5 rounded-tl-lg rounded-bl-lg">
+                                <p>{index + 1}</p>
+                            </td>
+
+                            <td className="px-3 py-5">
+                                <p>{user.name}</p>
+                            </td>
+                            <td className="px-3 py-5">
+                                <p>{user.email}</p>
+                            </td>
+                            <td className="px-3 py-5">
+                                <p>{moment(user.dateOfBirth).format('YYYY-MM-DD')}</p>
+                            </td>
+                            <td className="px-3 py-5">
+                                <p>{user.role}</p>
+                            </td>
+                            <td className="flex justify-center px-3 py-5 rounded-tr-lg rounded-br-lg">
+                                <span className='text-base text-white bg-violet-900 p-2 rounded mr-2 cursor-pointer' onClick={() => onDelete(user._id)}><MdDelete /></span>
+                                <span className='text-base text-white bg-violet-400 p-2 rounded cursor-pointer'><AiFillEdit /></span>
+                            </td>
+                        </tr>
+                        <tr className="h-2">
+                            <td></td>
+                        </tr>
+                    </>
                 )
             })
         )
@@ -51,19 +88,12 @@ export const UserList = () => {
 
     return (
         <>
-            <div className="container p-2 mx-auto sm:p-4 dark:text-gray-100">
-            <h2 className="mb-4 text-2xl font-semibold leadi">Invoices</h2>
-            <div className="px-4 overflow-x-auto rounded-md border border-purple-700">
+            <div className="container p-2 sm:p-4 dark:text-gray-100" style={{height: '32.5rem'}}>
+            <h2 className="ml-4 mb-4 text-2xl font-semibold leadi uppercase text-violet-400">Users</h2>
+            <div className="px-4 overflow-x-auto">
                 <table className="min-w-full text-xs">
-                    <colgroup>
-                        <col />
-                        <col />
-                        <col />
-                        <col />
-                        <col />
-                        <col className="w-24" />
-                    </colgroup>
-                    <thead className="dark:bg-black border-b border-opacity-20 dark:border-indigo-400">
+
+                    <thead className="dark:bg-black">
                         <tr className="text-left">
                             <th className="p-3">Id</th>
                             <th className="p-3">Name</th>
@@ -79,39 +109,14 @@ export const UserList = () => {
                 </table>
             </div>
         </div>
-
-        <div className="flex items-center justify-center py-10 lg:px-0 sm:px-6 px-4">
-
-                <div className="lg:w-3/5 w-full  flex items-center justify-between border-t border-gray-200">
-                    <div className="flex items-center pt-3 text-gray-600 hover:text-indigo-700 cursor-pointer">
-                        <svg width="14" height="8" viewBox="0 0 14 8" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M1.1665 4H12.8332" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
-                            <path d="M1.1665 4L4.49984 7.33333" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
-                            <path d="M1.1665 4.00002L4.49984 0.666687" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                            <p className="text-sm ml-3 font-medium leading-none ">Previous</p>                    
-                    </div>
-                    <div className="sm:flex hidden">
-                        <p className="text-sm font-medium leading-none cursor-pointer text-gray-600 hover:text-indigo-700 border-t border-transparent hover:border-indigo-400 pt-3 mr-4 px-2">1</p>
-                        <p className="text-sm font-medium leading-none cursor-pointer text-gray-600 hover:text-indigo-700 border-t border-transparent hover:border-indigo-400 pt-3 mr-4 px-2">2</p>
-                        <p className="text-sm font-medium leading-none cursor-pointer text-gray-600 hover:text-indigo-700 border-t border-transparent hover:border-indigo-400 pt-3 mr-4 px-2">3</p>
-                        <p className="text-sm font-medium leading-none cursor-pointer text-indigo-700 border-t border-indigo-400 pt-3 mr-4 px-2">4</p>
-                        <p className="text-sm font-medium leading-none cursor-pointer text-gray-600 hover:text-indigo-700 border-t border-transparent hover:border-indigo-400 pt-3 mr-4 px-2">5</p>
-                        <p className="text-sm font-medium leading-none cursor-pointer text-gray-600 hover:text-indigo-700 border-t border-transparent hover:border-indigo-400 pt-3 mr-4 px-2">6</p>
-                        <p className="text-sm font-medium leading-none cursor-pointer text-gray-600 hover:text-indigo-700 border-t border-transparent hover:border-indigo-400 pt-3 mr-4 px-2">7</p>
-                        <p className="text-sm font-medium leading-none cursor-pointer text-gray-600 hover:text-indigo-700 border-t border-transparent hover:border-indigo-400 pt-3 mr-4 px-2">8</p>
-                    </div>
-                    <div className="flex items-center pt-3 text-gray-600 hover:text-indigo-700 cursor-pointer">
-                        <p className="text-sm font-medium leading-none mr-3">Next</p>
-                        <svg width="14" height="8" viewBox="0 0 14 8" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M1.1665 4H12.8332" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
-                            <path d="M9.5 7.33333L12.8333 4" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
-                            <path d="M9.5 0.666687L12.8333 4.00002" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                            
-                    </div>
-                </div>
-            </div>
+        <Link to='/add-user'>
+            <button className='text-base text-violet-900 bg-white font-bold py-2 px-4 rounded ml-8 cursor-pointer'>Add User</button>
+        </Link>
+         <Pagignation 
+            pageCount={totalPages}
+            onPageChange={pageChangeHandler}
+            forcePage={currentPage}
+        />
         </>
     )
 }

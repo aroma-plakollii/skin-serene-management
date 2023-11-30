@@ -12,7 +12,7 @@ export const Sidebar = () => {
     }
 
     return (
-        <aside className="side-bar flex flex-col items-center w-64 h-screen overflow-hidden text-gray-400 bg-neutral-900 rounded shadow-[-45px_-45px_150px_4px_rgba(0,0,0,0.1),_10px_-10px_30px_4px_rgba(167,139,250,0.20)]">
+        <aside className="fixed side-bar flex flex-col w-64 h-screen overflow-hidden text-gray-400 bg-neutral-900 rounded shadow-[-45px_-45px_150px_4px_rgba(0,0,0,0.1),_10px_-10px_30px_4px_rgba(167,139,250,0.20)]" style={{width: '16.7%'}}>
             <a className="flex items-center w-full px-3 py-3 bg-gradient-to-r from-fuchsia-400/70 via-indigo-300/70 to-fuchsia-400/70" href="#">
             <img
                 className="mx-1 h-12 w-14"
